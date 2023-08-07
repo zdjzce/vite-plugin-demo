@@ -1,12 +1,15 @@
 <template>
   <div>
     {{testRef.test}}
+    {{ SvgTest }}
   </div>
 </template>
 <script lang="ts" setup>
+import { onMounted, ref } from 'vue';
 import test from 'virtual:module'
 import env from 'virtual:env'
-import { onMounted, ref } from 'vue';
+import SvgTest from '@/assets/svg/vue.svg'
+
 const testRef = ref(test) as { test: string };
 
 onMounted(() => {

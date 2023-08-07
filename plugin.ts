@@ -17,9 +17,9 @@ function virtualModulePlugin(): Plugin {
     configResolved: (config) => {
       env = config
     },
-    resolveId: function (id) {
-      console.log('resolve path id:', id)
-      console.log('arguments---------', arguments)
+    resolveId(id) {
+      // console.log('resolve path id:', id)
+      // console.log('arguments---------', arguments)
       if (id === virtualModuleName) {
         return virtualModuleId
       }
@@ -30,7 +30,7 @@ function virtualModulePlugin(): Plugin {
 
     },
     load: (id) => {
-      console.log('require id:', id)
+      // console.log('require id:', id)
       if (id === virtualModuleId) {
         // 加载虚拟模块
         return 'export default { test: "i am test value" }'        
