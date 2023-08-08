@@ -12,7 +12,6 @@ export default function svgLoader (options = {}) {
     enforce: 'pre',
 
     async load (id) {
-      debugger
       if (!id.match(svgRegex)) {
         return
       }
@@ -33,12 +32,10 @@ export default function svgLoader (options = {}) {
         console.warn('\n', `${id} couldn't be loaded by vite-svg-loader, fallback to default loader`)
         return
       }
-      console.log('svg 0:', svg)
 
       if (importType === 'raw') {
         return `export default ${JSON.stringify(svg)}`
       }
-      console.log('svg 1:', svg)
 
       if (svgo !== false && query !== 'skipsvgo') {
         svg = optimizeSvg(svg, {
@@ -46,20 +43,20 @@ export default function svgLoader (options = {}) {
           path
         }).data
       }
+
+      console.log('svg:', svg)
+      svg = svg.replace(/<style/g, '<component is="style"').replace(/<\/style/g, '</component')
+
+      const { code } = compileTemplate({
+        id: JSON.stringify(id),
+        source: svg,
+        filename: path,
+        transformAssetUrls: false
+      })
       
-      console.log('svg 2:', svg)
-
-      // svg = svg.replace(/<style/g, '<component is="style"').replace(/<\/style/g, '</component')
-
-      // const { code } = compileTemplate({
-      //   id: JSON.stringify(id),
-      //   source: svg,
-      //   filename: path,
-      //   transformAssetUrls: false
-      // })
-
-      // return `${code}\nexport default { render: render }`
-      return `export default { test: 1 }`
+      console.log('code:', code)
+      return `${code}\nexport default { render: render }`
+      // return `export default { test: 1 }`
     }
   }
 }

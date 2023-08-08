@@ -1,3 +1,4 @@
+import { promises } from "fs";
 import { Plugin, ResolvedConfig } from "vite";
 
 
@@ -45,6 +46,46 @@ function virtualModulePlugin(): Plugin {
 }
 
 
+/**
+  * 1. 拦截 svg 路径
+  * 2. 读取 svg，使用 readfile 或者 svgo 的 optimize
+  * 3. 将 svg 转成 component, 需要处理 style 标签的情况
+  * 4. component is 穿进去的参数 会渲染成一个 Tag
+ **/
+function svgLoader(): Plugin {
+  const svgRegex = /\.svg(\?(url|component))?$/;
+  return {
+    name: 'vite-svg-plugin',
+    async load(id) {
+      const match = svgRegex.exec(id);
+      if (!match) return
+
+      const type = match[2]
+      let svg
+
+      try {
+        svg = promises.readFile(id)
+      } catch (error) {
+        console.error(id, '----', error)
+      }
+
+      if (type === 'url') {
+        return `export default ${JSON.stringify(id)}`
+      }
+
+      if (type === 'component') {
+        const styleRegex = /<style>(.*?)<\/style>/g;
+        svg = svg.replace(styleRegex, '<component is="style">$1</component>');
+
+        // const component = 
+      }
+
+    }
+  }
+}
+
+
 export { 
-  virtualModulePlugin
+  virtualModulePlugin,
+  svgLoader
 }
