@@ -2,18 +2,13 @@
   <div>
     {{testRef.test}}
     <SvgTest />
-    <component is="style">
-      {
-        color: red
-      }
-    </component>
   </div>
 </template>
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import test from 'virtual:module'
 import env from 'virtual:env'
-import SvgTest from '@/assets/vue.svg'
+import SvgTest from '@/assets/vue.svg?component'
 
 const testRef = ref(test) as { test: string };
 
